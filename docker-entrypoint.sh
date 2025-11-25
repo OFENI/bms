@@ -1,13 +1,6 @@
 #!/bin/bash
 set -e
 
-# Substitute PORT in Apache config
-envsubst '${PORT}' < /etc/apache2/sites-available/000-default.conf > /tmp/apache-config.conf
-mv /tmp/apache-config.conf /etc/apache2/sites-available/000-default.conf
-
-# Update Apache to listen on PORT
-echo "Listen ${PORT:-80}" > /etc/apache2/ports.conf
-
 # Wait for database to be ready (if needed)
 # You can add database connection check here if needed
 
@@ -22,6 +15,7 @@ php artisan config:cache || true
 php artisan route:cache || true
 php artisan view:cache || true
 
-# Start Apache
-exec apache2-foreground
+# Start PHP built-in server (works better with Render's PORT variable)
+# Render provides PORT environment variable
+exec php -S 0.0.0.0:${PORT:-80} -t public
 

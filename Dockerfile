@@ -38,18 +38,8 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-di
 # Install Node dependencies and build assets
 RUN npm ci && npm run build
 
-# Configure Apache to use PORT environment variable
-RUN echo 'Listen ${PORT:-80}\n\
-<VirtualHost *:${PORT:-80}>\n\
-    DocumentRoot /var/www/html/public\n\
-    <Directory /var/www/html/public>\n\
-        AllowOverride All\n\
-        Require all granted\n\
-    </Directory>\n\
-</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
-
-# Use envsubst to substitute PORT variable at runtime
-RUN apt-get update && apt-get install -y gettext-base && apt-get clean && rm -rf /var/lib/apt/lists/*
+# We'll use PHP built-in server for Render (simpler PORT handling)
+# Apache config kept for reference but we'll use php -S in entrypoint
 
 # Copy and set permissions for entrypoint script
 COPY docker-entrypoint.sh /usr/local/bin/
