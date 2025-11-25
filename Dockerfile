@@ -32,6 +32,16 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
+# Copy package files first for better Docker layer caching
+COPY package*.json ./
+COPY composer.json composer.lock* ./
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+# Install Node dependencies
+RUN npm install
+
 # Copy application files
 COPY . /var/www/html
 
@@ -40,11 +50,8 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-
-# Install Node dependencies and build assets
-RUN npm ci && npm run build
+# Build assets (after copying files so vite.config.js and resources are available)
+RUN npm run build
 
 # We'll use PHP built-in server for Render (simpler PORT handling)
 # Apache config kept for reference but we'll use php -S in entrypoint
