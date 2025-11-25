@@ -29,20 +29,32 @@ This guide will help you deploy the Blood Management System to Render.com (free 
 
 ### 3. Deploy the Web Service
 
+**IMPORTANT**: Render may auto-detect this as a Node.js project. You MUST manually select PHP as the runtime.
+
+#### Option A: Using render.yaml (Recommended)
+
+1. In Render dashboard, click **"New +"** → **"Blueprint"**
+2. Connect your GitHub repository: `OFENI/bms`
+3. Render will automatically detect and use `render.yaml`
+4. Review the configuration and click **"Apply"**
+
+#### Option B: Manual Configuration
+
 1. In Render dashboard, click **"New +"** → **"Web Service"**
 2. Connect your GitHub repository:
    - Click **"Connect GitHub"** if not already connected
    - Select the repository: `OFENI/bms`
    - Click **"Connect"**
-3. Configure the service:
+3. **CRITICAL**: Configure the service:
    - **Name**: `bms-web` (or any name)
    - **Region**: Same as database
    - **Branch**: `main`
-   - **Root Directory**: Leave empty (or `bms` if your code is in a subdirectory)
-   - **Runtime**: `PHP`
+   - **Root Directory**: Leave empty
+   - **Runtime**: **MUST SELECT `PHP`** (DO NOT use auto-detected Node.js!)
+     - If you see "Node" or "Auto-detected", click the dropdown and select **"PHP"**
    - **Build Command**: 
      ```bash
-     composer install --no-dev --optimize-autoloader && npm ci && npm run build && php artisan key:generate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache
+     composer install --no-dev --optimize-autoloader && npm ci && npm run build && php artisan key:generate --force && php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache
      ```
    - **Start Command**: 
      ```bash
@@ -160,10 +172,22 @@ If you need file storage, you may need to:
 
 ## Troubleshooting
 
-### Build Fails
+### Build Fails - "composer: command not found"
+**This means Render is using Node.js runtime instead of PHP!**
+
+**Solution:**
+1. Go to your Web Service settings in Render
+2. Click **"Settings"** tab
+3. Scroll to **"Runtime"** section
+4. Change from **"Node"** to **"PHP"**
+5. Save changes
+6. Trigger a new deploy
+
+### Build Fails - Other Issues
 - Check build logs in Render dashboard
 - Ensure all dependencies are in `composer.json` and `package.json`
 - Verify PHP version compatibility (Laravel 12 requires PHP 8.2+)
+- Make sure Runtime is set to **PHP**, not Node.js
 
 ### Database Connection Errors
 - Verify `DB_URL` or individual database credentials
