@@ -1,11 +1,9 @@
 services:
   - type: web
     name: bms-web
-    runtime: php
     plan: free
-    buildCommand: composer install --no-dev --optimize-autoloader && npm ci && npm run build && php artisan key:generate --force && php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache
-    startCommand: php -S 0.0.0.0:$PORT -t public
-    healthCheckPath: /
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     envVars:
       - key: APP_ENV
         value: production
@@ -21,6 +19,7 @@ services:
         generateValue: true
       - key: APP_URL
         sync: false
+    healthCheckPath: /
 
 databases:
   - name: bms-database

@@ -29,7 +29,7 @@ This guide will help you deploy the Blood Management System to Render.com (free 
 
 ### 3. Deploy the Web Service
 
-**IMPORTANT**: Render may auto-detect this as a Node.js project. You MUST manually select PHP as the runtime.
+**IMPORTANT**: Render doesn't have native PHP support. This project uses **Docker** for deployment.
 
 #### Option A: Using render.yaml (Recommended)
 
@@ -38,29 +38,23 @@ This guide will help you deploy the Blood Management System to Render.com (free 
 3. Render will automatically detect and use `render.yaml`
 4. Review the configuration and click **"Apply"**
 
-#### Option B: Manual Configuration
+#### Option B: Manual Configuration (Docker)
 
 1. In Render dashboard, click **"New +"** → **"Web Service"**
 2. Connect your GitHub repository:
    - Click **"Connect GitHub"** if not already connected
    - Select the repository: `OFENI/bms`
    - Click **"Connect"**
-3. **CRITICAL**: Configure the service:
+3. Configure the service:
    - **Name**: `bms-web` (or any name)
    - **Region**: Same as database
    - **Branch**: `main`
    - **Root Directory**: Leave empty
-   - **Runtime**: **MUST SELECT `PHP`** (DO NOT use auto-detected Node.js!)
-     - If you see "Node" or "Auto-detected", click the dropdown and select **"PHP"**
-   - **Build Command**: 
-     ```bash
-     composer install --no-dev --optimize-autoloader && npm ci && npm run build && php artisan key:generate --force && php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache
-     ```
-   - **Start Command**: 
-     ```bash
-     php -S 0.0.0.0:$PORT -t public
-     ```
+   - **Environment**: **Docker**
+   - **Dockerfile Path**: `./Dockerfile`
+   - **Docker Context**: `.` (current directory)
    - **Plan**: Free
+   - **Auto-Deploy**: Yes (optional)
 
 ### 4. Configure Environment Variables
 
@@ -172,16 +166,11 @@ If you need file storage, you may need to:
 
 ## Troubleshooting
 
-### Build Fails - "composer: command not found"
-**This means Render is using Node.js runtime instead of PHP!**
-
-**Solution:**
-1. Go to your Web Service settings in Render
-2. Click **"Settings"** tab
-3. Scroll to **"Runtime"** section
-4. Change from **"Node"** to **"PHP"**
-5. Save changes
-6. Trigger a new deploy
+### Build Fails - Docker Issues
+- Ensure `Dockerfile` exists in the root directory
+- Check that Docker build is selected (not Node.js or other runtime)
+- Verify Dockerfile syntax is correct
+- Check build logs for specific Docker errors
 
 ### Build Fails - Other Issues
 - Check build logs in Render dashboard
