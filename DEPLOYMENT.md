@@ -49,12 +49,14 @@ This guide will help you deploy the Blood Management System to Render.com (free 
    - **Name**: `bms-web` (or any name)
    - **Region**: Same as database
    - **Branch**: `main`
-   - **Root Directory**: Leave empty
+   - **Root Directory**: **LEAVE EMPTY** (very important - do not set this!)
    - **Environment**: **Docker**
-   - **Dockerfile Path**: `./Dockerfile`
-   - **Docker Context**: `.` (current directory)
+   - **Dockerfile Path**: `Dockerfile` (or leave empty - Render will auto-detect)
+   - **Docker Context**: `.` (or leave empty)
    - **Plan**: Free
    - **Auto-Deploy**: Yes (optional)
+   
+   **Important**: Do NOT set a Root Directory when using Docker. Render will look for the Dockerfile in the repository root.
 
 ### 4. Configure Environment Variables
 
@@ -166,11 +168,25 @@ If you need file storage, you may need to:
 
 ## Troubleshooting
 
-### Build Fails - Docker Issues
-- Ensure `Dockerfile` exists in the root directory
+### Build Fails - "Dockerfile is missing" or "Service Root Directory" error
+**This means Render can't find the Dockerfile!**
+
+**Solution:**
+1. Go to your Web Service settings in Render
+2. Click **"Settings"** tab
+3. Scroll to **"Root Directory"** section
+4. **Make sure Root Directory is EMPTY** (not set to anything)
+5. Scroll to **"Docker"** section
+6. **Dockerfile Path** should be: `Dockerfile` (or leave empty for auto-detect)
+7. **Docker Context** should be: `.` (or leave empty)
+8. Save changes and trigger a new deploy
+
+### Build Fails - Other Docker Issues
+- Ensure `Dockerfile` exists in the repository root (not in a subdirectory)
 - Check that Docker build is selected (not Node.js or other runtime)
 - Verify Dockerfile syntax is correct
 - Check build logs for specific Docker errors
+- Make sure Root Directory is NOT set
 
 ### Build Fails - Other Issues
 - Check build logs in Render dashboard
