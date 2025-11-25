@@ -1,11 +1,123 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Blood Management System (BMS)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive Blood Management System built with Laravel 12 for managing blood donations, inventory, requests, and disbursements for hospitals and blood banks.
+
+## Features
+
+- **Admin Dashboard**: Complete administration panel for managing users, donors, institutions, and inventory
+- **Hospital Dashboard**: Dedicated interface for hospitals to manage blood requests and inventory
+- **Donor Management**: Track donor information, eligibility, and donation history
+- **Inventory Management**: Real-time tracking of blood inventory with expiration monitoring
+- **Blood Requests**: Hospital blood request system with approval workflow
+- **Disbursements**: Track blood disbursements and history
+- **Reports**: Generate PDF and CSV reports for various metrics
+- **Multi-role System**: Admin and Hospital user roles with appropriate permissions
+
+## Tech Stack
+
+- **Framework**: Laravel 12
+- **PHP**: 8.2+
+- **Database**: SQLite (development) / PostgreSQL (production)
+- **Frontend**: Blade Templates with Tailwind CSS
+- **PDF Generation**: DomPDF
+
+## Quick Start
+
+### Local Development
+
+1. Clone the repository:
+```bash
+git clone https://github.com/OFENI/bms.git
+cd bms
+```
+
+2. Install dependencies:
+```bash
+composer install
+npm install
+```
+
+3. Set up environment:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+4. Run migrations:
+```bash
+php artisan migrate
+php artisan db:seed
+```
+
+5. Build assets:
+```bash
+npm run build
+```
+
+6. Start the server:
+```bash
+php artisan serve
+```
+
+## Deployment
+
+This application can be deployed to free hosting platforms. See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
+
+### Quick Deploy to Render.com (Free)
+
+1. Sign up at [Render.com](https://render.com)
+2. Create a PostgreSQL database
+3. Create a new Web Service connected to this GitHub repository
+4. Configure environment variables (see DEPLOYMENT.md)
+5. Deploy!
+
+For detailed step-by-step instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+## Project Structure
+
+```
+bms/
+├── app/
+│   ├── Http/Controllers/    # Application controllers
+│   ├── Models/               # Eloquent models
+│   └── Mail/                 # Email notifications
+├── database/
+│   ├── migrations/           # Database migrations
+│   └── seeders/              # Database seeders
+├── resources/
+│   └── views/                # Blade templates
+│       ├── admin/            # Admin views
+│       └── hospital/         # Hospital views
+└── routes/
+    └── web.php               # Application routes
+```
+
+## Default Credentials
+
+After seeding, you can create an admin user via tinker:
+```bash
+php artisan tinker
+```
+
+Then:
+```php
+$user = new App\Models\User();
+$user->name = 'Admin';
+$user->email = 'admin@example.com';
+$user->password = Hash::make('password');
+$user->role = 'admin';
+$user->save();
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+---
 
 ## About Laravel
 
